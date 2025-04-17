@@ -18,7 +18,20 @@ jobs:
           name: Lancer les tests
           command: npm run test
 
+  deploy:
+    executor: node-executor
+    steps:
+      - run:
+          name: Déployer sur Render
+          command: |
+            curl -X POST https://api.render.com/deploy/srv-d00fjq7gi27c73b872rg \
+              -H "Authorization: Bearer $RENDER_API_KEY" \
+              -H "Content-Type: application/json"
+
 workflows:
   test-and-deploy:
     jobs:
       - install-and-test
+      - deploy:
+          requires:
+            - install-and-test
